@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>{{ portfolio.profile.name }} — Portfolio</title>
+  <meta name="description" content="{{ portfolio.content.summary }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="portfolio-page theme-{{ portfolio.profile.template }}">
+
+<nav class="portfolio-nav">
+  <a class="brand" href="/dashboard">
+    <span class="brand-mark">F</span> FOLIOO
+  </a>
+
+  <div>
+    <a href="/dashboard">Dashboard</a>
+    <a href="#projects">Projects</a>
+    <a href="#about">About</a>
+    <a href="{{ url_for('edit_portfolio', slug=slug) }}">Edit portfolio</a>
+    <a class="nav-cta" href="{{ url_for('download', slug=slug) }}">Download HTML ↓</a>
+  </div>
+</nav>
+
+<main class="portfolio-main">
+
+  <section class="portfolio-hero">
+    <p class="eyebrow">
+      <span class="dot"></span>
+      {{ portfolio.profile.role }}
+    </p>
+
+    <h1>
+      {{ portfolio.profile.name }}<br>
+      <span class="gradient">{{ portfolio.content.headline }}</span>
+    </h1>
+
+    <p class="portfolio-summary">{{ portfolio.content.summary }}</p>
+
+    <div class="link-row">
+      {% if portfolio.profile.github %}
+        <a href="{{ portfolio.profile.github }}" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+      {% endif %}
+
+      {% if portfolio.profile.linkedin %}
+        <a href="{{ portfolio.profile.linkedin }}" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a>
+      {% endif %}
+
+      {% if portfolio.profile.website %}
+        <a href="{{ portfolio.profile.website }}" target="_blank" rel="noopener noreferrer">Website ↗</a>
+      {% endif %}
+
+      {% if portfolio.profile.email %}
+        <a href="mailto:{{ portfolio.profile.email }}">Email ↗</a>
+      {% endif %}
+    </div>
+  </section>
+
+  <section class="portfolio-section" id="about">
+    <p class="kicker">
+      {% if portfolio.profile.get('profession_type') == 'tech' %}
+        ABOUT THE BUILDER
+      {% elif portfolio.profile.get('profession_type') == 'student' %}
+        MY LEARNING JOURNEY
+      {% elif portfolio.profile.get('profession_type') in ['creative', 'photography'] %}
+        MY CREATIVE STORY
+      {% elif portfolio.profile.get('profession_type') in ['business', 'finance'] %}
+        PROFESSIONAL PROFILE
+      {% elif portfolio.profile.get('profession_type') == 'educator' %}
+        TEACHING & RESEARCH
+      {% elif portfolio.profile.get('profession_type') == 'healthcare' %}
+        MY APPROACH TO CARE
+      {% elif portfolio.profile.get('profession_type') == 'writer' %}
+        MY STORY & PERSPECTIVE
+      {% else %}
+        ABOUT MY WORK
+      {% endif %}
+    </p>
+
+    <h2>
+      {% if portfolio.profile.get('profession_type') == 'student' %}
+        Learning today.<br>Building tomorrow.
+      {% elif portfolio.profile.get('profession_type') in ['creative', 'photography'] %}
+        Ideas into visuals.<br>Stories into work.
+      {% elif portfolio.profile.get('profession_type') == 'business' %}
+        Strategy with purpose.<br>Results that matter.
+      {% elif portfolio.profile.get('profession_type') == 'educator' %}
+        Knowledge shared.<br>Curiosity encouraged.
+      {% elif portfolio.profile.get('profession_type') == 'healthcare' %}
+        People first.<br>Care with purpose.
+      {% elif portfolio.profile.get('profession_type') == 'writer' %}
+        Words with purpose.<br>Stories that connect.
+      {% else %}
+        Curious by nature.<br>Focused on building.
+      {% endif %}
+    </h2>
+
+    <p class="about-copy">{{ portfolio.content.about }}</p>
+
+    {% if portfolio.profile.education %}
+      <div class="education">
+        <span>EDUCATION</span>
+        <b>{{ portfolio.profile.education }}</b>
+      </div>
+    {% endif %}
+  </section>
+
+  <section class="portfolio-section" id="skills">
+    <p class="kicker">
+      {% if portfolio.profile.get('profession_type') in ['creative', 'photography'] %}
+        CREATIVE TOOLKIT
+      {% elif portfolio.profile.get('profession_type') == 'educator' %}
+        SUBJECT & METHODS
+      {% elif portfolio.profile.get('profession_type') == 'healthcare' %}
+        AREAS OF PRACTICE
+      {% else %}
+        MY TOOLKIT
+      {% endif %}
+    </p>
+
+    <h2>
+      {% if portfolio.profile.get('profession_type') == 'business' %}
+        Capabilities & strengths
+      {% elif portfolio.profile.get('profession_type') == 'writer' %}
+        Writing skills & formats
+      {% else %}
+        Skills & strengths
+      {% endif %}
+    </h2>
+
+    <div class="skill-cloud">
+      {% for skill in portfolio.content.skills %}
+        <span>{{ skill }}</span>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="portfolio-section" id="projects">
+    <p class="kicker">
+      {% if portfolio.profile.get('profession_type') == 'photography' %}
+        PORTFOLIO GALLERY
+      {% elif portfolio.profile.get('profession_type') == 'writer' %}
+        SELECTED WRITING
+      {% elif portfolio.profile.get('profession_type') == 'educator' %}
+        RESEARCH & RESOURCES
+      {% elif portfolio.profile.get('profession_type') == 'business' %}
+        CASE STUDIES
+      {% else %}
+        SELECTED WORK
+      {% endif %}
+    </p>
+
+    <h2>
+      {% if portfolio.profile.get('profession_type') == 'student' %}
+        Projects and learning in action.
+      {% elif portfolio.profile.get('profession_type') == 'photography' %}
+        Moments, framed with intention.
+      {% elif portfolio.profile.get('profession_type') == 'writer' %}
+        Words, ideas and stories.
+      {% elif portfolio.profile.get('profession_type') == 'business' %}
+        Work that creates value.
+      {% else %}
+        Projects with purpose.
+      {% endif %}
+    </h2>
+
+    <div class="project-grid">
+      {% for project in portfolio.content.projects %}
+        <article class="project-card">
+          <div class="project-index">
+            PROJECT {{ '%02d'|format(loop.index) }}
+          </div>
+
+          <h3>{{ project.title }}</h3>
+          <p>{{ project.description }}</p>
+
+          <div class="project-tech">
+            {% for tech in project.tech %}
+              <span>{{ tech }}</span>
+            {% endfor %}
+          </div>
+
+          {% if project.link and project.link.startswith(('https://', 'http://')) %}
+            <a class="project-link" href="{{ project.link }}" target="_blank" rel="noopener noreferrer">
+              Explore project ↗
+            </a>
+          {% endif %}
+        </article>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="portfolio-section two-col">
+    <div>
+      <p class="kicker">
+        {% if portfolio.profile.get('profession_type') == 'educator' %}
+          TEACHING EXPERIENCE
+        {% elif portfolio.profile.get('profession_type') == 'healthcare' %}
+          RELEVANT EXPERIENCE
+        {% else %}
+          EXPERIENCE
+        {% endif %}
+      </p>
+
+      <h2>
+        {% if portfolio.profile.get('profession_type') == 'student' %}
+          What I've learned and done
+        {% elif portfolio.profile.get('profession_type') == 'business' %}
+          Work and impact
+        {% else %}
+          What I've done
+        {% endif %}
+      </h2>
+
+      <p>{{ portfolio.content.experience }}</p>
+    </div>
+
+    <div>
+      <p class="kicker">MILESTONES</p>
+      <h2>Highlights</h2>
+      <p>{{ portfolio.content.achievements }}</p>
+    </div>
+  </section>
+
+  <section class="contact-card">
+    <p class="kicker">LET'S CONNECT</p>
+    <h2>Have an opportunity<br>or an idea?</h2>
+    <p>I'm always open to meaningful conversations and new challenges.</p>
+
+    {% if portfolio.profile.email %}
+      <a class="primary-button inline-button" href="mailto:{{ portfolio.profile.email }}">
+        Get in touch ↗
+      </a>
+    {% endif %}
+  </section>
+
+  <p class="mode-note">
+    {% if portfolio.mode == 'ai' %}
+      AI-assisted content — review every detail before sharing.
+    {% else %}
+      Demo content — add your Gemini API key to enable AI generation.
+    {% endif %}
+  </p>
+
+</main>
+
+<footer class="footer">
+  <div class="footer-brand">FOLIOO © 2026</div>
+  <div class="footer-credit">Created with care by Piyush Dubey</div>
+  <a href="/">Create your own →</a>
+</footer>
+
+</body>
+</html>

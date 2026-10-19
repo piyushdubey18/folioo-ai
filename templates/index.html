@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Build a professional portfolio with AI-generated content and responsive templates.">
+  <title>Create Portfolio — FOLIOO</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="home">
+<header class="topbar"><a class="brand" href="/dashboard"><span class="brand-mark">F</span> FOLIOO</a><div class="top-actions"><a href="/dashboard">Dashboard</a><form action="/logout" method="post"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="text-button" type="submit">Log out</button></form></div></header>
+<main>
+<section class="hero">
+  <div class="eyebrow"><span class="dot"></span> YOUR WORK, PRESENTED BETTER</div>
+  <h1>Turn your story into<br><span class="gradient">a portfolio that works.</span></h1>
+  <p class="hero-copy">Share your background. Get polished portfolio content, choose a design, and create a page you can share with the world.</p>
+  <div class="hero-pills"><span>✦ AI-assisted writing</span><span>↗ Responsive templates</span><span>↓ HTML download</span></div>
+</section>
+<section class="builder-wrap">
+  <div class="form-intro"><div><p class="kicker">PORTFOLIO BUILDER</p><h2>Tell us about yourself</h2><p class="muted">Required fields are marked with *. Keep it honest—AI must not invent your experience.</p></div><div class="step-tag">01 <span>/</span> 03</div></div>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}{% for category, message in messages %}<div class="notice {{ category }}">{{ message }}</div>{% endfor %}{% endif %}
+  {% endwith %}
+  <form action="{{ url_for('generate') }}" method="post" id="portfolio-form">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="form-grid">
+      <label>Full name *<input name="name" required maxlength="80" placeholder="e.g. Aanya Sharma"></label>
+      <label>Target role / profession *<input name="role" required maxlength="100" placeholder="e.g. Frontend Developer"></label>
+      <label>Profession category *<select name="profession_type" id="profession-type" required>{% for key,label in professions.items() %}<option value="{{ key }}" {% if key == 'tech' %}selected{% endif %}>{{ label }}</option>{% endfor %}</select><span class="label-help">Designs and portfolio wording adapt to this category.</span></label>
+      <label>Email address<input type="email" name="email" maxlength="120" placeholder="you@example.com"></label>
+      <label>Education<input name="education" maxlength="250" placeholder="e.g. B.Tech Computer Science, 2027"></label>
+      <label class="wide">Skills <span class="label-help">One skill per line, up to 8</span><textarea name="skills" rows="3" maxlength="1000" placeholder="Python&#10;HTML & CSS&#10;Problem solving"></textarea></label>
+      <label class="wide">Projects <span class="label-help">One project title per line, up to 8</span><textarea name="projects" rows="3" maxlength="1200" placeholder="Personal portfolio website&#10;Student task manager"></textarea></label>
+      <label class="wide">Experience <span class="label-help">Internships, volunteering, coursework or work</span><textarea name="experience" rows="3" maxlength="700" placeholder="Describe what you have actually done..."></textarea></label>
+      <label class="wide">Achievements / certifications<textarea name="achievements" rows="2" maxlength="500" placeholder="Only include achievements you can verify."></textarea></label>
+      <label>GitHub URL<input type="url" name="github" placeholder="https://github.com/username"></label>
+      <label>LinkedIn URL<input type="url" name="linkedin" placeholder="https://linkedin.com/in/username"></label>
+      <label class="wide">Personal website (optional)<input type="url" name="website" placeholder="https://yourwebsite.com"></label>
+    </div>
+    <div class="template-select">
+      <div><p class="kicker">CHOOSE YOUR LOOK</p><h3>Pick a template</h3></div>
+      <div class="template-options">
+        {% for key, item in templates.items() %}
+        <label class="template-card" data-professions="{{ item.professions|join(',') }}">
+          <input type="radio" name="template" value="{{ key }}" {% if key == 'midnight' %}checked{% endif %}>
+          <span class="template-preview {{ key }}"><i></i><i></i><i></i><b></b></span>
+          <strong>{{ item.name }}</strong><small>{{ item.description }}</small>
+        </label>
+        {% endfor %}
+      </div>
+    </div>
+    <button class="primary-button" type="submit"><span>✦</span> Generate my portfolio <span class="button-arrow">→</span></button>
+    <p class="privacy-note">Prototype note: submitted details are saved in a local SQLite database. Do not enter sensitive personal information.</p>
+  </form>
+<script>
+(()=>{const select=document.getElementById("profession-type"),cards=[...document.querySelectorAll(".template-card[data-professions]")];function filter(){let firstVisible=null;cards.forEach(card=>{const ok=card.dataset.professions.split(",").includes(select.value);card.hidden=!ok;if(ok&&!firstVisible)firstVisible=card;const input=card.querySelector("input[type=radio]");if(!ok&&input.checked)input.checked=false;});if(firstVisible&&!cards.some(c=>!c.hidden&&c.querySelector("input").checked))firstVisible.querySelector("input").checked=true;}select.addEventListener("change",filter);filter();})();
+</script>
+</section>
+<section class="steps-row"><div><span>01</span><b>Share your details</b><small>Simple guided form</small></div><div><span>02</span><b>Generate content</b><small>AI or demo mode</small></div><div><span>03</span><b>Preview & download</b><small>Your page, ready to refine</small></div></section>
+</main>
+<footer class="footer"><span>FOLIOO © 2026</span><span>Built for people with a story to tell.</span></footer>
+</body></html>

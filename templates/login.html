@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Log in — FOLIOO</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="auth-page">
+
+  <header class="topbar">
+    <a class="brand" href="/">
+      <span class="brand-mark">F</span> FOLIOO
+    </a>
+    <span class="top-note">AI portfolio studio</span>
+  </header>
+
+  <main class="auth-layout">
+
+    <section class="auth-pitch">
+      <div class="eyebrow">
+        <span class="dot"></span>
+        YOUR NEXT CHAPTER STARTS HERE
+      </div>
+
+      <h1>
+        Your work deserves<br>
+        <span class="gradient">a better showcase.</span>
+      </h1>
+
+      <p>
+        Create a professional portfolio with AI-assisted writing and ready-made designs.
+        Sign in to manage your work.
+      </p>
+
+      <div class="auth-benefits">
+        <span>✦ AI-assisted content</span>
+        <span>↗ Responsive themes</span>
+        <span>↓ HTML download</span>
+      </div>
+
+      <div class="auth-orbit">
+        <div class="orbit-card">
+          <span class="orbit-label">YOUR PORTFOLIO</span>
+          <b>Make your work<br>easy to discover.</b>
+
+          <div class="orbit-lines">
+            <i></i>
+            <i></i>
+            <i></i>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="auth-card">
+      <p class="kicker">WELCOME BACK</p>
+      <h2>Log in to your account</h2>
+      <p class="muted">Your portfolio workspace is waiting.</p>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="notice {{ category }}">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      <form action="/login" method="post" class="auth-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        <label>
+          Email address
+          <input
+            type="email"
+            name="email"
+            required
+            maxlength="160"
+            autocomplete="email"
+            placeholder="you@example.com"
+          >
+        </label>
+
+        <label>
+          Password
+          <input
+            type="password"
+            name="password"
+            required
+            autocomplete="current-password"
+            placeholder="Your password"
+          >
+        </label>
+
+        <button class="primary-button" type="submit">
+          Log in <span class="button-arrow">→</span>
+        </button>
+      </form>
+
+      <p class="auth-switch">
+        New to FOLIOO? <a href="/register">Create an account</a>
+      </p>
+
+      <p class="privacy-note">
+        Prototype version. Use a unique password; do not enter sensitive information.
+      </p>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <span>FOLIOO © 2026</span>
+    <span class="footer-credit">Created with care by Piyush Dubey</span>
+    <span>Build your next opportunity.</span>
+  </footer>
+
+</body>
+</html>
